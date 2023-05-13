@@ -69,27 +69,42 @@
 //   .then((data) => console.log(data))
 //   .catch(console.log);
 
-// PATCH - часткова заміна
-async function patchData(url, data) {
+// // PATCH - часткова заміна
+// async function patchData(url, data) {
+//   const response = await fetch(url, {
+//     method: 'PATCH',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   if (!response.ok) throw Error(response.status);
+//   //console.log(response);
+//   return response.json();
+// }
+
+// patchData('https://jsonplaceholder.typicode.com/posts/11', {
+//   title: 'Title of my post',
+//   description: 'Description text',
+//   text: 'Some text',
+//   userId: 33,
+//   body: 'Body new text'
+// })
+//   .then((data) => console.log(data))
+//   .catch(console.log);
+
+// DELETE - видаляє 12 - й id
+async function deleteData(url) {
   const response = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+    method: 'DELETE'
   });
 
   if (!response.ok) throw Error(response.status);
   //console.log(response);
-  return response.json();
+  return true;
 }
 
-patchData('https://jsonplaceholder.typicode.com/posts/11', {
-  title: 'Title of my post',
-  description: 'Description text',
-  text: 'Some text',
-  userId: 33,
-  body: 'Body new text'
-})
+deleteData('https://jsonplaceholder.typicode.com/posts/12')
   .then((data) => console.log(data))
   .catch(console.log);
