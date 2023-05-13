@@ -23,10 +23,33 @@
 //   .then((data) => console.log(data))
 //   .catch(console.log);
 
-// POST
-async function postData(url, data) {
+// // POST
+// async function postData(url, data) {
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   if (!response.ok) throw Error(response.status);
+//   //console.log(response);
+//   return response.json();
+// }
+
+// postData('https://jsonplaceholder.typicode.com/posts', {
+//   title: 'Title of my post',
+//   description: 'Description text',
+//   text: 'Some text'
+// })
+//   .then((data) => console.log(data))
+//   .catch(console.log);
+
+// PUT
+async function putData(url, data) {
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -38,7 +61,7 @@ async function postData(url, data) {
   return response.json();
 }
 
-postData('https://jsonplaceholder.typicode.com/posts', {
+putData('https://jsonplaceholder.typicode.com/posts/11', {
   title: 'Title of my post',
   description: 'Description text',
   text: 'Some text'
