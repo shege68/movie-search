@@ -5,7 +5,7 @@
 // Update => PUT / PATCH
 // Delete => DELETE
 
-// // GET
+// // GET - отримати дані
 // async function getData(url) {
 //   const response = await fetch(url, {
 //     method: 'GET',
@@ -23,7 +23,7 @@
 //   .then((data) => console.log(data))
 //   .catch(console.log);
 
-// // POST
+// // POST - відправити дані
 // async function postData(url, data) {
 //   const response = await fetch(url, {
 //     method: 'POST',
@@ -46,10 +46,33 @@
 //   .then((data) => console.log(data))
 //   .catch(console.log);
 
-// PUT
-async function putData(url, data) {
+// // PUT - повна заміна
+// async function putData(url, data) {
+//   const response = await fetch(url, {
+//     method: 'PUT',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   });
+
+//   if (!response.ok) throw Error(response.status);
+//   //console.log(response);
+//   return response.json();
+// }
+
+// putData('https://jsonplaceholder.typicode.com/posts/11', {
+//   title: 'Title of my post',
+//   description: 'Description text',
+//   text: 'Some text'
+// })
+//   .then((data) => console.log(data))
+//   .catch(console.log);
+
+// PATCH - часткова заміна
+async function patchData(url, data) {
   const response = await fetch(url, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -61,10 +84,12 @@ async function putData(url, data) {
   return response.json();
 }
 
-putData('https://jsonplaceholder.typicode.com/posts/11', {
+patchData('https://jsonplaceholder.typicode.com/posts/11', {
   title: 'Title of my post',
   description: 'Description text',
-  text: 'Some text'
+  text: 'Some text',
+  userId: 33,
+  body: 'Body new text'
 })
   .then((data) => console.log(data))
   .catch(console.log);
