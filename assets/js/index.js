@@ -5,54 +5,164 @@
 // http://www.omdbapi.com/?apikey=[yourkey]&
 
 let moviesList = null;
+let inputSearch = null;
+
+function createElement({ type, attrs, container = null, evt = null, handler = null, position = 'append' }) {
+  const el = document.createElement(type);
+
+  Object.keys(attrs).forEach((key) => {
+    if (key !== 'innerHTML') el.setAttribute(key, attrs[key]);
+    else el.innerHTML = attrs[key];
+  });
+
+  if (container && position === 'append') container.append(el);
+  if (container && position === 'prepend') container.prepend(el);
+
+  return el;
+}
 
 function createStyle() {
-  const style = document.createElement('style');
-  style.innerHTML = `* {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  .container {
-    padding: 20px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-
-  .movies {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .movie {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-  }
-
-  .movie__image {
-    width: 100%;
-    object-fit: cover;
-  }`;
-  document.head.append(style);
+  createElement({
+    type: 'style',
+    attrs: {
+      innerHTML: `* {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .container {
+        padding: 20px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      .movies {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .movie {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+      }
+      .movie__image {
+        width: 100%;
+        object-fit: cover;
+      }
+      .search {
+        margin-bottom: 40px;
+      }
+      .search__label-input {
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      .search__input {
+        display: block;
+        padding: 0.75em 1em;
+        max-width: 400px;
+        width: 100%;
+        border-radius: 7px;
+        border: 1px solid lightblue;
+        margin-bottom: 0.75em;
+      }
+      .search__label-checkbox {
+        font-size: 0.75rem;
+        display: inline-block;
+        transform: translate(4px, -2px);
+      }`
+    },
+    container: document.head
+  });
 }
 
 function createMarkUp() {
-  const container = document.createElement('div');
-  container.setAttribute('class', 'container');
+  const container = createElement({
+    type: 'div',
+    attrs: { class: 'container' },
+    container: document.body,
+    position: 'prepend'
+  });
 
-  const movies = document.createElement('div');
-  movies.setAttribute('class', 'movies');
+  createElement({
+    type: 'h1',
+    attrs: {
+      innerHTML: 'Додаток для пошуку фільмів'
+    },
+    container
+  });
 
-  container.append(movies);
-  document.body.append(container);
+  const searchBox = createElement({
+    type: 'div',
+    attrs: {
+      class: 'search'
+    },
+    container
+  });
 
-  moviesList = document.querySelector('.movies');
+  const inputBox = createElement({
+    type: 'div',
+    attrs: {
+      class: 'search__group search__group--input'
+    },
+    container: searchBox
+  });
+
+  createElement({
+    type: 'label',
+    attrs: {
+      for: 'search',
+      class: 'search__label-input',
+      innerHTML: 'Пошук фільмів'
+    },
+    container: inputBox
+  });
+
+  inputSearch = createElement({
+    type: 'input',
+    attrs: {
+      id: 'search',
+      type: "seatch",
+      class: 'search__input',
+      placeholder: 'Почніть вводити текст...'
+    },
+    container: inputBox
+  });
+
+  const checkBox = createElement({
+    type: 'div',
+    attrs: {
+      class: 'search__group search__group--checkbox'
+    },
+    container: searchBox
+  });
+
+  createElement({
+    type: 'input',
+    attrs: {
+      id: 'checkbox',
+      type: "checkbox",
+      class: 'search__checkbox'
+    },
+    container: checkBox
+  });
+
+  createElement({
+    type: 'label',
+    attrs: {
+      for: 'checkbox',
+      class: 'search__label-checkbox',
+      innerHTML: 'Додати фільми до існуючих списків'
+    },
+    container: checkBox
+  });
+
+  moviesList = createElement({
+    type: 'div',
+    attrs: { class: 'movies' },
+    container
+  });
 }
 
 function addMovieToList(movie) {
@@ -60,7 +170,6 @@ function addMovieToList(movie) {
   const img = document.createElement('img');
 
   item.setAttribute('class', 'movie');
-  console.log(/^(http|https):\/\//i.test(movie.Poster));
 
   img.setAttribute('src', /^(http|https):\/\//i.test(movie.Poster) ? movie.Poster : 'assets/img/no-image.png');
   img.setAttribute('alt', `${movie.Title} ${movie.Year}`);
@@ -70,39 +179,42 @@ function addMovieToList(movie) {
   item.append(img);
 
   moviesList.appendChild(item);
-  /*
-    Poster: "https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_SX300.jpg"
-    Title: "Iron Man"
-    Type: "movie"
-    Year: "2008"
-    imdbID: "tt0371746"
-  */
-
 }
 
 const getData = (url) => fetch(url)
   .then((res) => res.json()
     .then((data) => data.Search));
 
-let searchStr = 'sup';
+const apiUrl = 'http://www.omdbapi.com';
+let searchLast = null;
 
 createMarkUp();
 createStyle();
 
-getData(`http://www.omdbapi.com/?apikey=18b8609f&s=${searchStr}`)
-  .then((movies) => movies.forEach((movie) => addMovieToList(movie)))
-  .catch((err) => console.log(err)); // ловимо помилку
+const debounceTime = (() => {
+  let timer = null;
 
-// const superman = getData(`http://www.omdbapi.com/?apikey=18b8609f&s=superman`);
-// const ironman = getData(`http://www.omdbapi.com/?apikey=18b8609f&s=ironman`);
-// const batman = getData(`http://www.omdbapi.com/?apikey=18b8609f&s=batman`);
+  return (cb, ms) => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(cb, ms);
+  };
+})();
 
-// superman.then((movies) => movies.forEach((movie) => console.log(movie)));
-// ironman.then((movies) => movies.forEach((movie) => console.log(movie)));
-// batman.then((movies) => movies.forEach((movie) => console.log(movie)));
+const inputSearchHandler = (e) => {
+  debounceTime(() => {
+    const searchString = e.target.value.trim();
 
-// Promise.all([superman, ironman, batman])
-//   .then((res) => res.forEach((movies) => movies.forEach((movie) => console.log(movie))));
+    if (searchString && searchString.length > 3 && searchString !== searchLast) {
+      getData(`${apiUrl}/?apikey=18b8609f&s=${searchString}`)
+        .then((movies) => movies.forEach((movie) => addMovieToList(movie)))
+        .catch((err) => console.log(err)); // ловимо помилку
+      console.log(searchString);
+    }
+    searchLast = searchString;
+  }, 2000);
+};
 
-// Promise.race([superman, ironman, batman])
-//   .then((res) => console.log(res));
+inputSearch.addEventListener('input', inputSearchHandler);
