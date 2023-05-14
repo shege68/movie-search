@@ -95,16 +95,16 @@
 //   .catch(console.log);
 
 // DELETE - видаляє 12 - й id
-async function deleteData(url) {
-  const response = await fetch(url, {
-    method: 'DELETE'
-  });
+// async function deleteData(url) {
+//   const response = await fetch(url, {
+//     method: 'DELETE'
+//   });
 
-  if (!response.ok) throw Error(response.status);
-  //console.log(response);
-  return true;
-}
+//   if (!response.ok) throw Error(response.status);
+//   //console.log(response);
+//   return true;
+// }
 
-deleteData('https://jsonplaceholder.typicode.com/posts/12')
-  .then((data) => console.log(data))
-  .catch(console.log);
+// deleteData('https://jsonplaceholder.typicode.com/posts/12')
+//   .then((data) => console.log(data))
+//   .catch(console.log);
