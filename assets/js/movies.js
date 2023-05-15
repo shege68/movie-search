@@ -8,7 +8,7 @@ import {
   triggerMode
 } from "./dom.js";
 
-let apiUrl = 'http://www.omdbapi.com';
+let apiUrl = 'https://www.omdbapi.com';
 let searchLast = null;
 
 const debounceTime = (() => {
